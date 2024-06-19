@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            background-image: url('image.png');
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        #question-form {
+            background: #cdebd0; /* Background color for the form */
+            padding: 40px; /* Increased padding for more space */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 450px; /* Adjusted width to 450px */
+            max-width: 90%; /* Ensures the form doesn't exceed 90% of viewport width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #question-form input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px; /* Slightly increased margin */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #question-form button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 12px 24px; /* Slightly increased padding */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #question-form button:hover {
+            background: #45a049;
+        }
+        #answer {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            width: 100%;
+            text-align: center;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <form id="question-form">
+        <h1>Ask Questions</h1>
+        <input type="text" id="question" placeholder="Enter your question">
+        <input type="hidden" id="context" value="{{ context }}">
+        <button type="submit">Ask</button>
+        <div id="answer"></div>
+    </form>
+
+    <script>
+        document.getElementById('question-form').onsubmit = async (event) => {
+            event.preventDefault();
+            const question = document.getElementById('question').value;
+            const context = document.getElementById('context').value;
+            
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question, context }),
+            });
+            
+            const data = await response.json();
+            if (data.answer) {
+                document.getElementById('answer').innerText = `Answer: ${data.answer}`;
+            } else {
+                document.getElementById('answer').innerText = `Error: ${data.error}`;
+            }
+        };
+    </script>
+</body>
+</html>
